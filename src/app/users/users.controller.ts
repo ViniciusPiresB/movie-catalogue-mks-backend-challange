@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  ParseUUIDPipe,
   HttpCode,
   HttpStatus,
   UseGuards
@@ -44,8 +43,8 @@ export class UsersController {
 
   @Get(":email")
   @UseGuards(AuthGuard("jwt"))
-  @ApiOkResponse({ description: "List user by id" })
-  @ApiNoContentResponse({ description: "No users with this id" })
+  @ApiOkResponse({ description: "List user by email" })
+  @ApiNoContentResponse({ description: "No users with this email" })
   findOne(@Param("email") email: string) {
     return this.usersService.findOneByEmail(email);
   }

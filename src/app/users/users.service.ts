@@ -1,11 +1,5 @@
-import {
-  BadRequestException,
-  HttpException,
-  HttpStatus,
-  Injectable
-} from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { getRedis, setRedis } from "src/config/redis";
 import { Repository } from "typeorm";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
@@ -35,18 +29,12 @@ export class UsersService {
 
     if (!user) throw new BadRequestException("User not found.");
 
-    setRedis(email, JSON.stringify(user));
-
     return user;
   }
 
   async findOne(id: string) {
-    const cachedUser = JSON.parse(getRedis(id));
-    if (cachedUser) return cachedUser;
     try {
       const user = await this.userRepository.findOneByOrFail({ id });
-
-      setRedis(id, JSON.stringify(user));
       return user;
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -56,7 +44,6 @@ export class UsersService {
   async update(id: string, updateUserDto: UpdateUserDto) {
     const user = await this.findOne(id);
     this.userRepository.merge(user, updateUserDto);
-    setRedis(id, "");
     return this.userRepository.save(user);
   }
 

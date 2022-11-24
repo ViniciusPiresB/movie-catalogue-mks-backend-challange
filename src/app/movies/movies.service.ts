@@ -6,7 +6,6 @@ import {
   UnprocessableEntityException
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { getRedis, setRedis } from "src/config/redis";
 import { Repository } from "typeorm";
 import { CreateMovieDto } from "./dto/create-movie.dto";
 import { UpdateMovieDto } from "./dto/update-movie.dto";
@@ -34,15 +33,11 @@ export class MovieService {
   }
 
   async findOne(id: number) {
-    const movieCached = JSON.parse(await getRedis(String(id)));
-    if (movieCached) return movieCached;
-
     const movie = await this.movieRepository.findOneBy({ id });
 
     if (!movie)
       throw new HttpException("Movie not found", HttpStatus.NO_CONTENT);
 
-    await setRedis(String(id), JSON.stringify(movie));
     return movie;
   }
 
@@ -60,7 +55,6 @@ export class MovieService {
     if (!updateResult["affected"])
       throw new BadRequestException({ error: "Something went wrong" });
 
-    setRedis(String(id), "");
     return { message: "Movie updated successfully" };
   }
 
@@ -70,7 +64,6 @@ export class MovieService {
     if (!deleteResult["affected"])
       throw new BadRequestException({ error: "Movie not found" });
 
-    setRedis(String(id), "");
     return { message: `Movie deleted successfully!` };
   }
 }
