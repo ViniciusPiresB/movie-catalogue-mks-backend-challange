@@ -5,6 +5,7 @@ import {
   Injectable
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { NotFoundError } from "rxjs";
 import { Repository } from "typeorm";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
@@ -30,19 +31,19 @@ export class UsersService {
   }
 
   async findOneByEmail(email: string) {
-    const user = await this.userRepository.findOneByOrFail({ email });
+    const user = await this.userRepository.findOneBy({ email });
 
-    if (!user) throw new HttpException("User not found", HttpStatus.NO_CONTENT);
+    if (!user) throw new BadRequestException("User not found.");
 
     return user;
   }
 
   async findOne(id: string) {
-    const user = await this.userRepository.findOneByOrFail({ id });
-
-    if (!user) throw new HttpException("User not found", HttpStatus.NO_CONTENT);
-
-    return user;
+    try {
+      return await this.userRepository.findOneByOrFail({ id });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {

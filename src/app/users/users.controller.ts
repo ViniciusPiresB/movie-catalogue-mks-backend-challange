@@ -42,12 +42,12 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get(":id")
+  @Get(":email")
   @UseGuards(AuthGuard("jwt"))
   @ApiOkResponse({ description: "List user by id" })
   @ApiNoContentResponse({ description: "No users with this id" })
-  findOne(@Param("id", new ParseUUIDPipe()) id: string) {
-    return this.usersService.findOne(id);
+  findOne(@Param("email") email: string) {
+    return this.usersService.findOneByEmail(email);
   }
 
   @Patch(":id")
