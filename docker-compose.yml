@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  api:
+    image: viniciuspiresb/mks-backend-challange
+    build: 
+      dockerfile: Dockerfile
+      context: .
+    depends_on:
+      - postgres
+      - cache
+    environment:
+      DATABASE_URL: "postgres://user:password@postgres:5432/db"
+      NODE_ENV: "development"
+      PORT: 8000
+      REDIS_HOST: cache
+      JWT_SECRET_KEY: "${JWT_SECRET_KEY}"
+    ports:
+      - "8000:8000"
+
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - cache:/data
+  
+  postgres:
+    image: postgres:10.4
+    ports:
+      - "35000:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+volumes:
+  cache:
