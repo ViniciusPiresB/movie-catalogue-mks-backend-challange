@@ -5,6 +5,7 @@ import { Movie } from "./movies/entities/movie.entity";
 import { MoviesModule } from "./movies/movies.module";
 import { UsersModule } from "./users/users.module";
 import { AuthModule } from "./auth/auth.module";
+import { User } from "./users/entities/user.entity";
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { AuthModule } from "./auth/auth.module";
       type: "postgres",
       url: process.env.DATABASE_URL,
       autoLoadEntities: true,
-      entities: [Movie]
+      entities: [Movie, User]
     }),
     CacheModule.register({ isGlobal: true }),
     MoviesModule,
