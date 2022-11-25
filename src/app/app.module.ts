@@ -13,8 +13,7 @@ import { AuthModule } from "./auth/auth.module";
       type: "postgres",
       url: process.env.DATABASE_URL,
       autoLoadEntities: true,
-      entities: [Movie],
-      synchronize: true
+      entities: [Movie]
     }),
     CacheModule.register({ isGlobal: true }),
     MoviesModule,
