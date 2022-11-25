@@ -3,7 +3,7 @@
 Defina o arquivo .env na raiz do diretório com base no arquivo .env.example, utilize um JWT SECRET secreto para gerar os tokens jwt.</br>
 Execute os comandos abaixo.
 
-`docker build . -t viniciuspiresb/mks-backend-challange`
+`docker build . -t viniciuspiresb/mks-backend-challange`<br>
 `docker-compose up`
 
 ## Test
