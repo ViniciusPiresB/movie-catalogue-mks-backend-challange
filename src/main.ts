@@ -16,7 +16,16 @@ async function bootstrap() {
       "API to Create, Read, Update and Delete movies from database."
     )
     .setVersion("1.0")
-    .addBearerAuth({ type: "http", scheme: "bearer", bearerFormat: "JWT" })
+    .addBearerAuth(
+      {
+        type: "http",
+        scheme: "Bearer",
+        name: "Authorization",
+        in: "Header",
+        bearerFormat: "JWT"
+      },
+      "access-token"
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

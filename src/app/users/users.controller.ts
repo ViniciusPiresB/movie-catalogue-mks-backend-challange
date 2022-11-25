@@ -41,14 +41,13 @@ export class UsersController {
 
   @Get()
   @UseGuards(AuthGuard("jwt"))
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard("jwt"))
+  @ApiBearerAuth("access-token")
   findAll() {
     return this.usersService.findAll();
   }
 
   @Get(":email")
-  @ApiBearerAuth()
+  @ApiBearerAuth("access-token")
   @UseGuards(AuthGuard("jwt"))
   @ApiOkResponse({ description: "List user by email" })
   @ApiNoContentResponse({ description: "No users with this email" })
@@ -58,7 +57,7 @@ export class UsersController {
 
   @Patch(":id")
   @UseGuards(AuthGuard("jwt"))
-  @ApiBearerAuth()
+  @ApiBearerAuth("access-token")
   @ApiCreatedResponse({ description: "User updated successfully" })
   @ApiBadRequestResponse()
   update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
@@ -67,7 +66,7 @@ export class UsersController {
 
   @Delete(":id")
   @UseGuards(AuthGuard("jwt"))
-  @ApiBearerAuth()
+  @ApiBearerAuth("access-token")
   @ApiCreatedResponse({ description: "User deleted successfully" })
   @ApiBadRequestResponse()
   @HttpCode(HttpStatus.NO_CONTENT)

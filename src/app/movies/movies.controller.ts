@@ -23,13 +23,13 @@ import { CreateMovieDto } from "./dto/create-movie.dto";
 import { UpdateMovieDto } from "./dto/update-movie.dto";
 
 @ApiTags("Movie")
+@ApiBearerAuth("access-token")
 @UseGuards(AuthGuard("jwt"))
 @Controller("movie")
 export class MovieController {
   constructor(private readonly movieService: MovieService) {}
 
   @Post()
-  @ApiBearerAuth()
   @ApiCreatedResponse({ description: "Created Successfully" })
   @ApiUnprocessableEntityResponse({ description: "Missing some fields" })
   create(@Body() createMovieDto: CreateMovieDto) {
@@ -37,14 +37,12 @@ export class MovieController {
   }
 
   @Get()
-  @ApiBearerAuth()
   @ApiOkResponse({ description: "List all movies in database" })
   findAll() {
     return this.movieService.findAll();
   }
 
   @Get(":id")
-  @ApiBearerAuth()
   @ApiOkResponse({ description: "List movie by id" })
   @ApiNoContentResponse({ description: "No movies with this id" })
   findOne(@Param("id") id: string) {
@@ -52,7 +50,6 @@ export class MovieController {
   }
 
   @Patch(":id")
-  @ApiBearerAuth()
   @ApiCreatedResponse({ description: "Movie updated successfully" })
   @ApiBadRequestResponse({ description: "Movie not found" })
   update(@Param("id") id: string, @Body() updateMovieDto: UpdateMovieDto) {
@@ -60,7 +57,6 @@ export class MovieController {
   }
 
   @Delete(":id")
-  @ApiBearerAuth()
   @ApiCreatedResponse({ description: "Movie deleted successfully" })
   @ApiBadRequestResponse({ description: "Movie not found" })
   remove(@Param("id") id: string) {
