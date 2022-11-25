@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   CACHE_MANAGER,
+  ConflictException,
   Inject,
   Injectable
 } from "@nestjs/common";
@@ -21,9 +22,17 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const user = this.userRepository.create(createUserDto);
+    try {
+      const user = this.userRepository.create(createUserDto);
+      const savedUser = await this.userRepository.save(user);
 
-    return this.userRepository.save(user);
+      return savedUser;
+    } catch (error) {
+      if (error.code === "23505")
+        throw new ConflictException("A user with this email already exist.");
+
+      throw new BadRequestException(error.message);
+    }
   }
 
   findAll() {
