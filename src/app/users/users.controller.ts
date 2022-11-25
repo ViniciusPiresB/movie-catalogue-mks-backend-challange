@@ -14,6 +14,7 @@ import {
 } from "@nestjs/common";
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiNoContentResponse,
   ApiOkResponse,
@@ -40,11 +41,14 @@ export class UsersController {
 
   @Get()
   @UseGuards(AuthGuard("jwt"))
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"))
   findAll() {
     return this.usersService.findAll();
   }
 
   @Get(":email")
+  @ApiBearerAuth()
   @UseGuards(AuthGuard("jwt"))
   @ApiOkResponse({ description: "List user by email" })
   @ApiNoContentResponse({ description: "No users with this email" })
@@ -54,6 +58,7 @@ export class UsersController {
 
   @Patch(":id")
   @UseGuards(AuthGuard("jwt"))
+  @ApiBearerAuth()
   @ApiCreatedResponse({ description: "User updated successfully" })
   @ApiBadRequestResponse()
   update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
@@ -62,6 +67,7 @@ export class UsersController {
 
   @Delete(":id")
   @UseGuards(AuthGuard("jwt"))
+  @ApiBearerAuth()
   @ApiCreatedResponse({ description: "User deleted successfully" })
   @ApiBadRequestResponse()
   @HttpCode(HttpStatus.NO_CONTENT)

@@ -16,10 +16,11 @@ async function bootstrap() {
       "API to Create, Read, Update and Delete movies from database."
     )
     .setVersion("1.0")
+    .addBearerAuth({ type: "http", scheme: "bearer", bearerFormat: "JWT" })
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup("api", app, document);
+  SwaggerModule.setup("doc", app, document);
 
   await app.listen(process.env.PORT);
 }
