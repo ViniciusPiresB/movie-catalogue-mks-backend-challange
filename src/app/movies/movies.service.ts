@@ -39,7 +39,7 @@ export class MovieService {
   }
 
   async findOne(id: number) {
-    const cachedItem = this.cacheManager.get(String(id));
+    const cachedItem: Movie = await this.cacheManager.get(String(id));
     if (cachedItem) return cachedItem;
 
     const movie = await this.movieRepository.findOneBy({ id });
@@ -55,6 +55,8 @@ export class MovieService {
 
     if (!movieToBeUpdated)
       throw new BadRequestException({ error: "Movie not found" });
+
+    await this.cacheManager.del(String(id));
 
     const updateResult = await this.movieRepository.update(
       { id },
@@ -72,6 +74,8 @@ export class MovieService {
 
     if (!deleteResult["affected"])
       throw new BadRequestException({ error: "Movie not found" });
+
+    await this.cacheManager.del(String(id));
 
     return { message: `Movie deleted successfully!` };
   }

@@ -23,9 +23,6 @@ export class UsersService {
   async create(createUserDto: CreateUserDto) {
     const user = this.userRepository.create(createUserDto);
 
-    await this.cacheManager.set(user.email, user);
-    await this.cacheManager.set(user.id, user);
-
     return this.userRepository.save(user);
   }
 
@@ -43,15 +40,20 @@ export class UsersService {
 
     if (!user) throw new BadRequestException("User not found.");
 
+    await this.cacheManager.set(email, user);
+    await this.cacheManager.set(user.id, user);
     return user;
   }
 
   async findOne(id: string) {
     try {
-      const cachedUser: User = await this.cacheManager.get(String(id));
+      const cachedUser: User = await this.cacheManager.get(id);
       if (cachedUser) return cachedUser;
 
       const user = await this.userRepository.findOneByOrFail({ id });
+
+      await this.cacheManager.set(user.email, user);
+      await this.cacheManager.set(id, user);
       return user;
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -62,8 +64,8 @@ export class UsersService {
     const user: User = await this.findOne(id);
     this.userRepository.merge(user, updateUserDto);
 
-    await this.cacheManager.del(String(id));
     await this.cacheManager.del(user.email);
+    await this.cacheManager.del(id);
 
     return this.userRepository.save(user);
   }
@@ -71,9 +73,9 @@ export class UsersService {
   async remove(id: string) {
     const deleteResult = this.userRepository.delete({ id });
 
-    await this.cacheManager.del(id);
-
     if (!deleteResult["affected"])
       throw new BadRequestException({ error: "User not found" });
+
+    await this.cacheManager.del(id);
   }
 }

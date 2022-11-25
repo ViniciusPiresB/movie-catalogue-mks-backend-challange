@@ -16,7 +16,7 @@ import { AuthModule } from "./auth/auth.module";
       entities: [Movie],
       synchronize: true
     }),
-    CacheModule.register({ isGlobal: true, ttl: 60 }),
+    CacheModule.register({ isGlobal: true }),
     MoviesModule,
     UsersModule,
     AuthModule
