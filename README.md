@@ -23,7 +23,7 @@ $ npm run test:cov
 
 IP para acesso aos endpoits: http://18.230.194.185:8000/{endpoint}
 
-A documentação para o sistema pode ser acessado após subir o container no link http://localhost:8000/doc
+A documentação para o sistema pode ser acessado após subir o container no link http://18.230.194.185:8000/doc
 <br><br>
 A inserção de token via Swagger não está funcionando, para testar a aplicação, utilize o Insomnia na raiz do diretório e defina o token JWT como BEARER token.<br>
 A rota de criação de usuário não requer autenticação, realize um cadastro e utile o mesmo parar fazer a autenticação(DICA: Defina uma variável de ambiente para TOKEN e utilize nas rotas mais facilmente).
