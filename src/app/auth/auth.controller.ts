@@ -21,7 +21,6 @@ export class AuthController {
   @ApiUnauthorizedResponse({ description: "Invalid email or password" })
   @Post("login")
   async login(@Req() req: any, @Body() user: UserAuthenticateDto) {
-    console.log(req);
     return this.authService.login(req.user);
   }
 }
