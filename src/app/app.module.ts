@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { CacheModule, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule } from "@nestjs/config";
 import { Movie } from "./movies/entities/movie.entity";
@@ -16,6 +16,7 @@ import { AuthModule } from "./auth/auth.module";
       entities: [Movie],
       synchronize: true
     }),
+    CacheModule.register({ isGlobal: true, ttl: 60 }),
     MoviesModule,
     UsersModule,
     AuthModule

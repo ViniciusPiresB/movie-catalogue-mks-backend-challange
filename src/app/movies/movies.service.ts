@@ -1,11 +1,13 @@
 import {
   BadRequestException,
+  CACHE_MANAGER,
   HttpException,
   HttpStatus,
-  Injectable,
-  UnprocessableEntityException
+  Inject,
+  Injectable
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { Cache } from "cache-manager";
 import { Repository } from "typeorm";
 import { CreateMovieDto } from "./dto/create-movie.dto";
 import { UpdateMovieDto } from "./dto/update-movie.dto";
@@ -15,12 +17,16 @@ import { Movie } from "./entities/movie.entity";
 export class MovieService {
   constructor(
     @InjectRepository(Movie)
-    private movieRepository: Repository<Movie>
+    private movieRepository: Repository<Movie>,
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache
   ) {}
 
   async create(createMovieDto: CreateMovieDto) {
     try {
       const createdMovie = this.movieRepository.create(createMovieDto);
+
+      await this.cacheManager.set(String(createdMovie.id), createdMovie);
 
       return this.movieRepository.save(createdMovie);
     } catch (error) {
@@ -33,6 +39,9 @@ export class MovieService {
   }
 
   async findOne(id: number) {
+    const cachedItem = this.cacheManager.get(String(id));
+    if (cachedItem) return cachedItem;
+
     const movie = await this.movieRepository.findOneBy({ id });
 
     if (!movie)
