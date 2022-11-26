@@ -69,7 +69,7 @@ export class UsersController {
   @Delete(":id")
   @UseGuards(AuthGuard("jwt"))
   @ApiBearerAuth("access-token")
-  @ApiCreatedResponse({ description: "User deleted successfully" })
+  @ApiNoContentResponse({ description: "User deleted successfully" })
   @ApiBadRequestResponse({ description: "User not found" })
   @ApiBadRequestResponse({ description: "Invalid syntax for type UUID" })
   @HttpCode(HttpStatus.NO_CONTENT)
