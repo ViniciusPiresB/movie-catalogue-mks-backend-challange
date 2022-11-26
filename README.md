@@ -23,7 +23,7 @@ $ npm run test:cov
 
 IP para acesso aos endpoits: http://18.230.194.185:8000/{endpoint}
 
-A documentação para o sistema pode ser acessado após subir o container no link http://18.230.194.185:8000/doc<br>
+A documentação para o sistema pode ser acessado no link http://18.230.194.185:8000/doc<br>
 Para acessar as rotas com restrição de login, crie um usuário e faça login na rota de autenticação, insira o token no botão "Authorize" no Swagger UI, então utilize as outras rotas restritas.
 <br><br>
 Caso haja necessidade, pode ser utilizado o modelo do INSOMNIA deixado na raiz do repositório.<br>
