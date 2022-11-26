@@ -7,7 +7,7 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Cache } from "cache-manager";
-import { Repository } from "typeorm";
+import { Repository, EntityNotFoundError, QueryFailedError } from "typeorm";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { User } from "./entities/user.entity";
@@ -65,6 +65,12 @@ export class UsersService {
       await this.cacheManager.set(id, user);
       return user;
     } catch (error) {
+      if (error instanceof QueryFailedError)
+        throw new BadRequestException(error.message);
+
+      if (error instanceof EntityNotFoundError)
+        throw new BadRequestException("User not found");
+
       throw new BadRequestException(error.message);
     }
   }
@@ -80,11 +86,12 @@ export class UsersService {
   }
 
   async remove(id: string) {
-    const deleteResult = this.userRepository.delete({ id });
-
-    if (!deleteResult["affected"])
-      throw new BadRequestException({ error: "User not found" });
-
-    await this.cacheManager.del(id);
+    try {
+      const user = await this.findOne(id);
+      await this.userRepository.delete({ id: user.id });
+      await this.cacheManager.del(id);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 }

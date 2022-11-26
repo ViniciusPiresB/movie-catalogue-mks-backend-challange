@@ -34,7 +34,9 @@ export class UsersController {
 
   @Post()
   @ApiCreatedResponse({ description: "Created Successfully" })
-  @ApiUnprocessableEntityResponse()
+  @ApiUnprocessableEntityResponse({
+    description: "User body sent with wrong pattern."
+  })
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
@@ -59,7 +61,7 @@ export class UsersController {
   @UseGuards(AuthGuard("jwt"))
   @ApiBearerAuth("access-token")
   @ApiCreatedResponse({ description: "User updated successfully" })
-  @ApiBadRequestResponse()
+  @ApiBadRequestResponse({ description: "User not found" })
   update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
@@ -68,7 +70,8 @@ export class UsersController {
   @UseGuards(AuthGuard("jwt"))
   @ApiBearerAuth("access-token")
   @ApiCreatedResponse({ description: "User deleted successfully" })
-  @ApiBadRequestResponse()
+  @ApiBadRequestResponse({ description: "User not found" })
+  @ApiBadRequestResponse({ description: "Invalid syntax for type UUID" })
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param("id") id: string) {
     return this.usersService.remove(id);
